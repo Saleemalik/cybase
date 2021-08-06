@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>django web</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" >
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    <style>
+        body {
+            color: #404E67;
+            background: #F5F7FA;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .table-wrapper {
+            width: 531px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;	
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        }
+        .table-title {
+            padding-bottom: 10px;
+            margin: 0 0 10px;
+        }
+        .table-title h2 {
+            margin: 6px 0 0;
+            font-size: 22px;
+        }
+        
+        </style>
+</head>
+<body >
+    
+
+
+<br>
+<h1 class="text-center">VIEW SHOP</h1>
+<hr>
+<br>
+       
+<br>
+<div class="container-lg">
+  <div class="table-responsive">
+      <div class="table-wrapper">
+          <div class="table-title w-auto">
+              <div class="row">
+                  <div class="col-sm-8"><h2>Products</h2></div>
+                  
+                   
+                  
+              </div>
+          </div>
+          <table  class="table table-bordered  w-auto">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>size</th>
+                      <th>color</th>
+                      <th>price</th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for product in products %}
+                  <tr>
+                      <td id="name{{product.id}}">{{product.productName}}</td>
+                      <td><select class="form-control" name="size" onchange="size_('{{product.id}}')" id="size{{product.id}}">
+                        <option>Select</option>
+                        <option>L</option>
+                        <option>M</option>
+                        <option>S</option>
+                    </select></td>
+                      <td><select class="form-control" name="color" onchange="color_('{{product.id}}')" id="color{{product.id}}">
+                        <option>Select</option>
+                        <option>red</option>
+                        <option>green</option>
+                        <option>blue</option>
+                        <option>orange</option>
+                        <option>black</option>
+                    </select></td>
+                      <td id="price{{product.id}}" >select size and color</td>
+                      
+                  </tr>
+                {% endfor %}
+                 
+                 
+              </tbody>
+          </table>
+        
+      </div>
+  </div>
+  
+    <script>
+        
+        function size_(id){
+            
+            var size = document.getElementById('size'+id).value
+            var color = document.getElementById('color'+id).value
+            var name = document.getElementById('name'+id).innerText
+    
+            var data = {
+                'csrfmiddlewaretoken':'{{csrf_token}}',
+                'size': size,
+                'color': color,
+                'name':name
+            }
+            $.ajax({
+                url:"{% url 'home' %}",
+                method : 'POST',
+                data : data,
+                type : JSON,
+                
+                success: function(data){
+                    if(data == 'false1'){
+                        
+                        $("#price"+id).html(price)
+                    }
+                    else if(data == 'false2'){
+                        
+                        $("#price"+id).html("select color")
+                    } 
+                    else{
+                        $("#price"+id).html(data)
+                    }
+                }
+            })
+        }
+        function color_(id){
+            var color = document.getElementById('color'+id).value
+            var size = document.getElementById('size'+id).value
+            var name = document.getElementById('name'+id).innerHTML
+            
+            var data = {
+                'csrfmiddlewaretoken':'{{csrf_token}}',
+                'size': size,
+                'color': color,
+                'name':name
+            }
+            $.ajax({
+                url:"{% url 'home' %}",
+                method : 'POST',
+                data : data,
+                type : JSON,
+                
+                success: function(data){
+                    if(data == 'false1'){
+                        
+                        $("#price"+id).html("select size")
+                    }
+                    else if(data == 'false2'){
+                        
+                        $("#price"+id).html("select color")
+                    } 
+                    else if(data == 'false3'){
+                        
+                        $("#price"+id).html("product outof stock")
+                    }
+                    else{
+                        $("#price"+id).html(data)
+                    }
+                }
+            })
+
+           
+        }
+    </script>
+
+   
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+   
+</body>
+</html>

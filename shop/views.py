@@ -27,7 +27,6 @@ def home(request):
                 return JsonResponse(price, safe=False)
             except:
                 return JsonResponse('false3', safe=False)
-            print(price.price)
             
     Context = {
         'products': products,
